@@ -1,0 +1,108 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+public class Solution
+{
+    private static StringBuilder str1 = new StringBuilder();
+    private static StringBuilder str2 = new StringBuilder();
+    private static StringBuilder str3 = new StringBuilder();
+    
+    static float num1 = 13.5f;
+    static float num2 = -27.125f;
+    static float num3 = 0.125f;
+    static float num4 = -0.75f;
+    
+    static void Main(string[] args)
+    {
+        Devide(num1);
+    }
+
+    private static void Devide(float num)
+    {
+        str1.Clear();
+        str2.Clear();
+        str3.Clear();
+        
+        int temp = (int) num;
+        num -= temp;
+        if (temp > 0)
+            str1.Append("0");
+        else
+        {
+            str1.Append("1");
+            temp = Math.Abs(temp);
+        }
+        
+        temp = ToBinary(temp);
+        Console.WriteLine($"{temp}의 정수부 2진수 : {str2}");
+        int exp = (temp == 0) ? str2.Length - 1 : 0;
+
+        int get = ToBinaryFloat(Math.Abs(num));
+        Console.WriteLine($"{num}의 실수부 2진수 : {str3}");
+
+        string str = str2.ToString();
+        str.Reverse();
+        str += str3.ToString();
+        
+        string expo = Expend(str);
+        str1.Append(expo);
+        str1.Append(str);
+
+        for (int i = str1.Length; i < 32; i++)
+            str1.Append("0");
+
+        Console.WriteLine($"숫자 : {num1}, 이진수 : {str1}");
+    }
+
+    private static int ToBinary(int num)
+    {
+        if (num / 2 < 2)
+        {
+            str2.Append((num % 2).ToString());
+            str2.Append((num / 2).ToString());
+            return num / 2;
+        }
+        else
+        {
+            str2.Append((num % 2).ToString());
+            return ToBinary(num / 2);
+        }
+    }
+
+    private static int ToBinaryFloat(float num)
+    {
+        num *= 2;
+        int answer = (int) num;
+        str3.Append(answer.ToString());
+        num -= answer;
+        if (num != 0)
+            return ToBinaryFloat(num);
+        
+        return answer;
+    }
+
+    private static string Expend(string str, int expo = 0)
+    {
+        str2.Clear();
+        int count = expo;
+
+        if (expo == 0)
+        {
+            char[] c = str.ToCharArray();
+            for (int i = 0; i < c.Length; i++)
+            {
+                count--;
+                if (c[i] == 1) break;
+            }
+        }
+
+        count += 127;
+        count = ToBinary(count);
+        string answer = str2.ToString();
+        answer.Reverse();
+        return answer;
+    }
+}
